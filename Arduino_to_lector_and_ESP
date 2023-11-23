@@ -1,0 +1,29 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial barcodeSerial(10, 11);  // RX (Pin 10), TX (Pin 11)
+String scannedBarcode = "";
+
+void setup() {
+  Serial.begin(9600);       // Inicializar el puerto serial para la depuración
+  barcodeSerial.begin(9600); // Inicializar el puerto serial para el lector de códigos de barras
+}
+
+void loop() {
+  if (barcodeSerial.available()) {
+    char c = barcodeSerial.read();
+    if (c != '\n') {
+      scannedBarcode += c; // Agregar caracteres al código de barras mientras no se reciba una nueva línea
+    } else {
+      // Aquí tienes el código de barras completo en la variable scannedBarcode
+      processBarcode(scannedBarcode);
+      scannedBarcode = ""; // Limpiar el código de barras para la próxima lectura
+    }
+  }
+}
+
+void processBarcode(String barcode) {
+  // Aquí puedes realizar acciones con el código de barras, como enviarlo al ESP32
+  Serial.print("Código de Barras: ");
+  Serial.println(barcode);
+  Serial.println("CodigoEscaneado:" + scannedBarcode);
+}
